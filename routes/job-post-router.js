@@ -6,13 +6,14 @@ const {
     remove,
     update,
 } = require('../controllers/job-post-controller');
+const { canAccess } = require('../middlewares/can-access');
 
 const router = express.Router();
 
-router.post('/', create);
-router.get('/', index);
-router.get('/:id', indexOne);
-router.patch('/:id', update);
-router.delete('/:id', remove);
+router.post('/', canAccess(['teacher', 'tpo']), create);
+router.get('/', canAccess(['teacher', 'tpo']), index);
+router.get('/:id', canAccess(['teacher', 'tpo']), indexOne);
+router.patch('/:id', canAccess(['teacher', 'tpo']), update);
+router.delete('/:id', canAccess(['teacher', 'tpo']), remove);
 
 module.exports = router;
