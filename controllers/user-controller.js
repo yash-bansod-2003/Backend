@@ -51,16 +51,17 @@ async function login(req, res, next) {
         return next(error);
     }
 
-    const { email, password } = req.body;
+    const { Email_ID,
+        Password } = req.body;
 
     try {
-        const user = await UserModel.findOne({ email });
+        const user = await UserModel.findOne({ email: Email_ID });
 
         if (!user) {
             return next(CustomErrorHandler.notFound('user not found'));
         }
 
-        const match = user.password === password;
+        const match = user.password === Password;
 
         if (!match) {
             return next(

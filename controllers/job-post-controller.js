@@ -12,14 +12,44 @@ async function create(req, res, next) {
         return next(error);
     }
 
-    const { title, description, company, location, teacher } = req.body;
+    const {
+        company_Name,
+        company_description,
+        website_Link,
+        job_Description,
+        job_Position,
+        job_Type,
+        salary,
+        vacancy,
+        location,
+        qualification,
+        skills,
+        experience,
+        selection_Process,
+        terms_and_conditions,
+        registration_Link,
+        deadline,
+        teacher
+    } = req.body;
     try {
         const jobPost = await JobPostModel.create({
-            title,
-            description,
-            company,
+            company_Name,
+            company_description,
+            website_Link,
+            job_Description,
+            job_Position,
+            job_Type,
+            salary,
+            vacancy,
             location,
-            teacher,
+            qualification,
+            skills,
+            experience,
+            selection_Process,
+            terms_and_conditions,
+            registration_Link,
+            deadline,
+            teacher
         });
 
         if (!jobPost) {
@@ -79,7 +109,23 @@ async function update(req, res, next) {
         return next(error);
     }
 
-    const { title, description, company, location } = req.body;
+    const { company_Name,
+        company_description,
+        website_Link,
+        job_Description,
+        job_Position,
+        job_Type,
+        salary,
+        vacancy,
+        location,
+        qualification,
+        skills,
+        experience,
+        selection_Process,
+        terms_and_conditions,
+        registration_Link,
+        deadline,
+        teacher } = req.body;
     try {
         const jobPost = await JobPostModel.find({ _id });
 
@@ -92,10 +138,23 @@ async function update(req, res, next) {
                 _id,
             },
             {
-                title,
-                description,
-                company,
+                company_Name,
+                company_description,
+                website_Link,
+                job_Description,
+                job_Position,
+                job_Type,
+                salary,
+                vacancy,
                 location,
+                qualification,
+                skills,
+                experience,
+                selection_Process,
+                terms_and_conditions,
+                registration_Link,
+                deadline,
+                teacher
             },
         );
 

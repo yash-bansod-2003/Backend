@@ -165,6 +165,10 @@ const StudentSchema = new mongoose.Schema({
         type: Number,
         req: true,
     },
+    role: {
+        type: String,
+        default: "student"
+    }
 });
 
 const StudentModel = mongoose.model('Student', StudentSchema, 'students');
