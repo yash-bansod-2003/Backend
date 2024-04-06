@@ -3,14 +3,14 @@ const {
     register,
     login,
     update,
-    updatePassword,
-} = require('../controllers/student-controller');
+    remove,
+} = require('../controllers/user-controller');
 
 const router = express.Router();
 
 router.post('/register', register);
 router.post('/login', login);
-router.patch('/update', update);
-router.patch('/updatePassword', updatePassword);
+router.patch('/:id', update);
+router.delete('/:id', remove);
 
 module.exports = router;
