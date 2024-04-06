@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const GlobalErrorHandler = require('./middlewares/error-handler');
 const StudentRouter = require('./routes/student-router');
 const UserRouter = require('./routes/user-router');
+const JobPostRouter = require('./routes/job-post-router');
+const JobApplicationRouter = require('./routes/job-application-router');
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -18,6 +20,9 @@ app.use(
 
 app.use('/api/v1/user', UserRouter);
 app.use('/api/v1/student', StudentRouter);
+app.use('/api/v1/post', JobPostRouter);
+app.use('/api/v1/application', JobApplicationRouter);
+
 app.use(GlobalErrorHandler);
 
 app.get('/', (req, res) => {

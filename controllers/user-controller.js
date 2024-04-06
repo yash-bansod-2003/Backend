@@ -1,4 +1,3 @@
-const Joi = require('joi');
 const UserModel = require('../models/user');
 const CustomErrorHandler = require('../services/custom-error-handler');
 const {
