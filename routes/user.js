@@ -6,10 +6,12 @@ const {
     update,
     updatePassword,
     index,
+    self,
     indexOne,
     uploadCsv,
     applied,
     notApplied,
+    se,
 } = require('../controllers/user');
 const authenticate = require('../middlewares/authenticate');
 const { canAccess } = require('../middlewares/can-access');
@@ -22,6 +24,7 @@ router.post('/register', register);
 router.post('/upload', authenticate, upload.single('csvFile'), uploadCsv);
 router.post('/login', login);
 router.get('/', authenticate, index);
+router.get('/self', authenticate, self);
 router.get('/:id', authenticate, indexOne);
 router.get(
     '/applied',

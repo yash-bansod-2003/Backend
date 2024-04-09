@@ -182,6 +182,21 @@ async function indexOne(req, res, next) {
     }
 }
 
+async function self(req, res, next) {
+    const _id = req.auth._id;
+
+    if (!_id) {
+        return next(CustomErrorHandler.serverError());
+    }
+
+    try {
+        const user = await UserModel.findOne({ _id });
+        return res.json(user);
+    } catch (error) {
+        return next(error);
+    }
+}
+
 async function update(req, res, next) {
     const { error } = userUpdateValidator.validate(req.body);
 
@@ -189,19 +204,7 @@ async function update(req, res, next) {
         return next(error);
     }
 
-    const {
-        Email_ID,
-        SSC_Percentage,
-        SSC_Year_Of_Passing,
-        SSC_Board,
-        HSC_Percentage,
-        HSC_Year_Of_Passing,
-        HSC_Board,
-        Diploma_Branch,
-        Diploma_Percentage,
-        Diploma_Year_Of_Passing,
-        Diploma_Board,
-    } = req.body;
+    const payload = req.body;
 
     try {
         const user = await UserModel.findOne({ Email_ID });
@@ -214,18 +217,7 @@ async function update(req, res, next) {
             {
                 Email_ID,
             },
-            {
-                SSC_Percentage,
-                SSC_Year_Of_Passing,
-                SSC_Board,
-                HSC_Percentage,
-                HSC_Year_Of_Passing,
-                HSC_Board,
-                Diploma_Branch,
-                Diploma_Percentage,
-                Diploma_Year_Of_Passing,
-                Diploma_Board,
-            },
+            payload,
         );
 
         return res.json(updatedUser);
@@ -300,6 +292,7 @@ module.exports = {
     updatePassword,
     uploadCsv,
     update,
+    self,
     index,
     indexOne,
     applied,
