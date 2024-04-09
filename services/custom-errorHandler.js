@@ -18,11 +18,7 @@ class CustomErrorHandler extends Error {
         return new CustomErrorHandler(message, status, additionalInfo);
     }
 
-    static alreadyExists(
-        message = 'already exists',
-        status = 401,
-        additionalInfo,
-    ) {
+    static conflict(message = 'conflict', status = 409, additionalInfo) {
         return new CustomErrorHandler(message, status, additionalInfo);
     }
 
@@ -38,13 +34,13 @@ class CustomErrorHandler extends Error {
         return new CustomErrorHandler(message, status, additionalInfo);
     }
 
-    static connectionError(
-        message = 'cannot connect to database',
-        status = 404,
+    static serviceUnavailable(
+        message = 'service unavailable',
+        status = 503,
         additionalInfo,
     ) {
         return new CustomErrorHandler(message, status, additionalInfo);
     }
 }
 
-module.exports = CustomErrorHandler;
+module.exports = { CustomErrorHandler };

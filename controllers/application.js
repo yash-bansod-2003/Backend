@@ -1,9 +1,9 @@
 const JobApplicationModel = require('../models/application');
-const CustomErrorHandler = require('../services/custom-error-handler');
+const CustomErrorHandler = require('../services/custom-errorHandler');
 
 const {
     jobApplicationCreateValidator,
-} = require('../lib/validations/jobApplication');
+} = require('../lib/validations/application');
 
 async function create(req, res, next) {
     const { error } = jobApplicationCreateValidator.validate(req.body);
@@ -34,6 +34,24 @@ async function create(req, res, next) {
 async function index(req, res, next) {
     try {
         const jobApplications = await JobApplicationModel.find();
+
+        if (!jobApplications) {
+            return next(CustomErrorHandler.serverError());
+        }
+
+        return res.status(201).json(jobApplications);
+    } catch (err) {
+        return next(err);
+    }
+}
+
+async function indexStudentApplications(req, res, next) {
+    const studentId = req.params.id;
+
+    try {
+        const jobApplications = await JobApplicationModel.find({
+            student: studentId,
+        });
 
         if (!jobApplications) {
             return next(CustomErrorHandler.serverError());
@@ -93,4 +111,4 @@ async function remove(req, res, next) {
     }
 }
 
-module.exports = { create, index, indexOne, remove };
+module.exports = { create, index, indexOne, remove, indexStudentApplications };

@@ -1,12 +1,15 @@
-const CustomErrorHandler = require('../services/custom-error-handler');
+const { CustomErrorHandler } = require('../services/custom-errorHandler');
 
-function canAccess(AuthorizeRoles) {
+const canAccess = (roles) => {
     return (req, res, next) => {
-        const { role } = req.body;
-        if (!AuthorizeRoles.includes(role)) {
-            return next(CustomErrorHandler.unauthorize());
+        const roleFromToken = req.auth.role;
+
+        if (!roles.includes(roleFromToken)) {
+            return next(new CustomErrorHandler.unauthorize());
         }
+
         return next();
     };
-}
+};
+
 module.exports = { canAccess };

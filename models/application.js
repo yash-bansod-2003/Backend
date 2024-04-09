@@ -1,25 +1,25 @@
 const mongoose = require('mongoose');
 
-const JobApplicationSchema = new mongoose.Schema(
+const applicationSchema = new mongoose.Schema(
     {
         student: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Student',
             required: true,
         },
-        jobPost: {
+        post: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'JobPost',
+            ref: 'Post',
             required: true,
         },
     },
     { timestamps: true },
 );
 
-const JobApplicationModel = mongoose.model(
-    'JobApplication',
-    JobApplicationSchema,
-    'jobApplications',
+const ApplicationModel = mongoose.model(
+    'Application',
+    applicationSchema,
+    'applications',
 );
 
-module.exports = JobApplicationModel;
+module.exports = { ApplicationModel };

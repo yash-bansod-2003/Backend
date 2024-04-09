@@ -1,4 +1,4 @@
-const CustomErrorHandler = require('../services/custom-error-handler');
+const CustomErrorHandler = require('../services/custom-errorHandler');
 const { ValidationError } = require('joi');
 
 const errorHandler = (error, req, res, next) => {

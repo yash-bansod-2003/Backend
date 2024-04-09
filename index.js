@@ -2,31 +2,33 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const GlobalErrorHandler = require('./middlewares/error-handler');
-const StudentRouter = require('./routes/student-router');
-const UserRouter = require('./routes/user-router');
-const JobPostRouter = require('./routes/job-post-router');
-const JobApplicationRouter = require('./routes/job-application-router');
+const cookieParser = require('cookie-parser');
 
-const PORT = process.env.PORT || 3000;
+const GlobalErrorHandler = require('./middlewares/error-handler');
+
+const { userRouter } = require('./routes/user');
+const { postRouter } = require('./routes/post');
+const { applicationRouter } = require('./routes/application');
+const { Server } = require('./lib/constants');
+
+const PORT = Server.Port || 3000;
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(
     cors({
         origin: '*',
     }),
 );
 
-app.use('/api/v1/user', UserRouter);
-app.use('/api/v1/student', StudentRouter);
-app.use('/api/v1/post', JobPostRouter);
-app.use('/api/v1/application', JobApplicationRouter);
-
+app.use('/api/v1/user', userRouter);
+// app.use('/api/v1/post', postRouter);
+// app.use('/api/v1/application', applicationRouter);
 app.use(GlobalErrorHandler);
 
 app.get('/', (req, res) => {
-    res.send('Hello World Message');
+    res.send('Health Ok');
 });
 
 app.listen(PORT, () => {

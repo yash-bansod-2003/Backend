@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const JobPostSchema = new mongoose.Schema(
+const postSchema = new mongoose.Schema(
     {
         company_Name: {
             type: String,
@@ -43,11 +43,11 @@ const JobPostSchema = new mongoose.Schema(
         },
         skills: {
             type: String,
-            required: true
+            required: true,
         },
         experience: {
             type: String,
-            default: "fresher"
+            default: 'fresher',
         },
         selection_Process: {
             type: String,
@@ -70,6 +70,6 @@ const JobPostSchema = new mongoose.Schema(
     { timestamps: true },
 );
 
-const JobPostModel = mongoose.model('JobPost', JobPostSchema, 'jobposts');
+const PostModel = mongoose.model('Post', postSchema, 'posts');
 
-module.exports = JobPostModel;
+module.exports = { PostModel };
