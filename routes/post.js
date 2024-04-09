@@ -6,14 +6,26 @@ const {
     remove,
     update,
 } = require('../controllers/post');
+const authenticate = require('../middlewares/authenticate');
 const { canAccess } = require('../middlewares/can-access');
+const { Roles } = require('../lib/constants');
 
 const router = express.Router();
 
-router.post('/', canAccess(['teacher', 'tpo']), create);
-router.get('/', index);
-router.get('/:id', indexOne);
-router.patch('/:id', canAccess(['teacher', 'tpo']), update);
-router.delete('/:id', canAccess(['teacher', 'tpo']), remove);
+router.post('/', authenticate, canAccess([Roles.Tpo, Roles.Teacher]), create);
+router.get('/', authenticate, index);
+router.get('/:id', authenticate, indexOne);
+router.patch(
+    '/:id',
+    authenticate,
+    canAccess([Roles.Tpo, Roles.Teacher]),
+    update,
+);
+router.delete(
+    '/:id',
+    authenticate,
+    canAccess([Roles.Tpo, Roles.Teacher]),
+    remove,
+);
 
 module.exports = { postRouter: router };

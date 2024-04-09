@@ -1,31 +1,29 @@
-const JobApplicationModel = require('../models/application');
-const CustomErrorHandler = require('../services/custom-errorHandler');
+const { ApplicationModel } = require('../models/application');
+const { CustomErrorHandler } = require('../services/custom-errorHandler');
 
 const {
-    jobApplicationCreateValidator,
+    applicationCreateValidator,
 } = require('../lib/validations/application');
 
 async function create(req, res, next) {
-    const { error } = jobApplicationCreateValidator.validate(req.body);
+    const { error } = applicationCreateValidator.validate(req.body);
 
     if (error) {
         return next(error);
     }
 
-    const { student, jobPost } = req.body;
+    const { post } = req.body;
     try {
-        const jobApplication = await JobApplicationModel.create({
-            student,
-            jobPost,
+        const application = await ApplicationModel.create({
+            student: req.auth._id,
+            post,
         });
 
-        if (!jobApplication) {
-            return next(
-                CustomErrorHandler.serverError('job application not created'),
-            );
+        if (!application) {
+            return next(CustomErrorHandler.serverError());
         }
 
-        return res.status(201).json(jobApplication);
+        return res.status(201).json(application);
     } catch (err) {
         return next(err);
     }
@@ -33,31 +31,13 @@ async function create(req, res, next) {
 
 async function index(req, res, next) {
     try {
-        const jobApplications = await JobApplicationModel.find();
+        const applications = await ApplicationModel.find();
 
-        if (!jobApplications) {
+        if (!applications) {
             return next(CustomErrorHandler.serverError());
         }
 
-        return res.status(201).json(jobApplications);
-    } catch (err) {
-        return next(err);
-    }
-}
-
-async function indexStudentApplications(req, res, next) {
-    const studentId = req.params.id;
-
-    try {
-        const jobApplications = await JobApplicationModel.find({
-            student: studentId,
-        });
-
-        if (!jobApplications) {
-            return next(CustomErrorHandler.serverError());
-        }
-
-        return res.status(201).json(jobApplications);
+        return res.status(201).json(applications);
     } catch (err) {
         return next(err);
     }
@@ -67,17 +47,17 @@ async function indexOne(req, res, next) {
     const _id = req.params.id;
 
     if (!_id) {
-        return next(CustomErrorHandler.serverError('id is required param'));
+        return next(CustomErrorHandler.serverError());
     }
 
     try {
-        const jobApplication = await JobApplicationModel.find({ _id });
+        const application = await ApplicationModel.find({ _id });
 
-        if (!jobApplication) {
+        if (!application) {
             return next(CustomErrorHandler.notFound());
         }
 
-        return res.status(201).json(jobApplication);
+        return res.status(201).json(application);
     } catch (err) {
         return next(err);
     }
@@ -91,24 +71,25 @@ async function remove(req, res, next) {
     }
 
     try {
-        const jobApplication = await JobApplicationModel.find({ _id });
+        const application = await ApplicationModel.find({ _id });
 
-        if (!jobApplication) {
+        if (!application) {
             return next(CustomErrorHandler.notFound());
         }
-        const deletedJobApplication =
-            await JobApplicationModel.findOneAndDelete({ _id });
+        const deletedapplication = await ApplicationModel.findOneAndDelete({
+            _id,
+        });
 
-        if (!deletedJobApplication) {
+        if (!deletedapplication) {
             return next(
                 CustomErrorHandler.serverError('job application not updated'),
             );
         }
 
-        return res.json(deletedJobApplication);
+        return res.json(deletedapplication);
     } catch (error) {
         return next(error);
     }
 }
 
-module.exports = { create, index, indexOne, remove, indexStudentApplications };
+module.exports = { create, index, indexOne, remove };

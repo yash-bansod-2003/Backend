@@ -1,4 +1,7 @@
 const { UserModel } = require('../models/user');
+const { PostModel } = require('../models/post');
+const { ApplicationModel } = require('../models/application');
+
 const { CustomErrorHandler } = require('../services/custom-errorHandler');
 const fs = require('node:fs');
 const csvParser = require('csv-parser');
@@ -231,6 +234,66 @@ async function update(req, res, next) {
     }
 }
 
+async function applied(req, res, next) {
+    const _id = req.params.id;
+
+    if (!_id) {
+        return next(CustomErrorHandler.serverError());
+    }
+
+    try {
+        const appliedStudents = await ApplicationModel.find({
+            post: postId,
+        }).populate('student');
+        return res.json(appliedStudents);
+    } catch (error) {
+        return next(error);
+    }
+}
+
+async function notApplied(req, res, next) {
+    const _id = req.params.id;
+
+    if (!_id) {
+        return next(CustomErrorHandler.serverError());
+    }
+
+    try {
+        const appliedStudents = await ApplicationModel.find({
+            post: postId,
+        }).populate('student');
+        const allStudents = await UserModel.find({ Role: Roles.Student });
+        const notAppliedStudents = allStudents.filter((student) => {
+            return !appliedStudents.some((appliedStudent) =>
+                appliedStudent.student._id.equals(student._id),
+            );
+        });
+        return res.json(notAppliedStudents);
+    } catch (error) {
+        return next(error);
+    }
+}
+
+async function appliedPosts(req, res, next) {
+    const _id = req.auth._id;
+
+    if (!_id) {
+        return next(CustomErrorHandler.serverError());
+    }
+
+    try {
+        const studentApplications = await ApplicationModel.find({
+            student: _id,
+        }).populate('post');
+        const appliedPosts = studentApplications.map(
+            (application) => application.post,
+        );
+        return res.json(appliedPosts);
+    } catch (error) {
+        return next(error);
+    }
+}
+
 module.exports = {
     register,
     login,
@@ -239,4 +302,6 @@ module.exports = {
     update,
     index,
     indexOne,
+    applied,
+    notApplied,
 };

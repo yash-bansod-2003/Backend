@@ -4,15 +4,14 @@ const {
     index,
     indexOne,
     remove,
-    indexStudentApplications,
 } = require('../controllers/application');
+const authenticate = require('../middlewares/authenticate');
 
 const router = express.Router();
 
-router.post('/', create);
-router.get('/', index);
-router.get('/student/:id', indexStudentApplications);
-router.get('/:id', indexOne);
-router.delete('/:id', remove);
+router.post('/', authenticate, create);
+router.get('/', authenticate, index);
+router.get('/:id', authenticate, indexOne);
+router.delete('/:id', authenticate, remove);
 
 module.exports = { applicationRouter: router };
