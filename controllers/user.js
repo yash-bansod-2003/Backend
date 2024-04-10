@@ -112,6 +112,8 @@ async function login(req, res, next) {
 
         res.cookie('accessToken', accessToken, {
             httpOnly: true,
+            domain: "localhost",
+            sameSite: "strict",
             maxAge: 1000 * 60 * 60 * 2,
         });
 
@@ -227,26 +229,29 @@ async function update(req, res, next) {
 }
 
 async function applied(req, res, next) {
-    const _id = req.params.id;
+    const { postId } = req.body;
 
-    if (!_id) {
+    if (!postId) {
         return next(CustomErrorHandler.serverError());
     }
 
     try {
-        const appliedStudents = await ApplicationModel.find({
+        const data = await ApplicationModel.find({
             post: postId,
         }).populate('student');
+
+        const appliedStudents = data.map(item => item.student)
         return res.json(appliedStudents);
     } catch (error) {
+        console.log(error);
         return next(error);
     }
 }
 
 async function notApplied(req, res, next) {
-    const _id = req.params.id;
+    const { postId } = req.body;
 
-    if (!_id) {
+    if (!postId) {
         return next(CustomErrorHandler.serverError());
     }
 
@@ -286,6 +291,35 @@ async function appliedPosts(req, res, next) {
     }
 }
 
+async function appliedStatus(req, res, next) {
+    try {
+        // Extract student ID and job post ID from request query parameters
+        const { postId } = req.query;
+
+        // Find if there is an application matching the student ID and job post ID
+        const existingApplication = await ApplicationModel.findOne({ student: req.auth._id, post: postId });
+
+        // If application exists, student has already applied for the job post
+        const hasApplied = !!existingApplication;
+
+        res.json({ hasApplied });
+    } catch (error) {
+        console.error('Error checking application status:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+async function logout(req, res, next) {
+    try {
+        res.clearCookie("accessToken");
+        return res.json({ id: req.auth._id });
+    } catch (error) {
+        return next(error);
+    }
+}
+
+
+
 module.exports = {
     register,
     login,
@@ -297,4 +331,7 @@ module.exports = {
     indexOne,
     applied,
     notApplied,
+    logout,
+    appliedPosts,
+    appliedStatus
 };
